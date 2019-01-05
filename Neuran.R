@@ -1,0 +1,16 @@
+#Neural networks
+library(MASS)
+data<- Boston
+maxs <- apply(data,2,max)
+mins <- apply(data,2,min)
+scaled.data<- scale(data,center = mins,scale = maxs-mins)
+scaled<- as.data.frame(scaled.data)
+library(caTools)
+split<- sample.split(scaled$medv,SplitRatio = 0.7)
+ntrain<- subset(scaled,split==T)
+ntest<- subset(scaled,split==F)
+n <- names(ntrain)
+f<- as.formula(paste("medv ~", paste(n[!n %in% "medv"], collapse = " + ")))
+library(neuralnet)
+nn<- neuralnet(f,data = ntrain,hidden =  c(5,3),linear.output = T)
+pred.nn <- compute(nn,ntest[1:13])
